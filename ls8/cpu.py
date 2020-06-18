@@ -148,19 +148,3 @@ class CPU:
             value = self.ram[self.sp]
             self.sp += 1
             return value
-
-intel_cpu = CPU()
-
-program = input("Enter program name: ")
-program = f"examples/{program}.ls8"
-file = open(program, "r")
-program = []
-for instruction in file:
-    byte = instruction.split()[0]
-    if byte != '#':
-        byte = int(byte, base=2)
-        program.append(byte)
-
-intel_cpu.load(program)
-intel_cpu.run()
-print(intel_cpu.ram)             
