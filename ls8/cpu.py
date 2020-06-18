@@ -67,8 +67,7 @@ class CPU:
 
     def run(self):
         """Run the CPU."""
-        
-    LDI = 0b10000010
+        LDI = 0b10000010
         PRN = 0b01000111
         HLT = 0b00000001
         MUL = 0b10100010
@@ -149,3 +148,19 @@ class CPU:
             value = self.ram[self.sp]
             self.sp += 1
             return value
+
+intel_cpu = CPU()
+
+program = input("Enter program name: ")
+program = f"examples/{program}.ls8"
+file = open(program, "r")
+program = []
+for instruction in file:
+    byte = instruction.split()[0]
+    if byte != '#':
+        byte = int(byte, base=2)
+        program.append(byte)
+
+intel_cpu.load(program)
+intel_cpu.run()
+print(intel_cpu.ram)             
