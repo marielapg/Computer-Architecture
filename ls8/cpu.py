@@ -67,4 +67,85 @@ class CPU:
 
     def run(self):
         """Run the CPU."""
-        pass
+        
+    LDI = 0b10000010
+        PRN = 0b01000111
+        HLT = 0b00000001
+        MUL = 0b10100010
+        ADD = 0b10100000
+        PUSH = 0b01000101
+        POP = 0b01000110
+        CALL = 0b01010000
+        RET = 0b00010001
+
+        halted = False
+
+        while not halted:
+            instruction = self.ram_read(self.pc)
+
+            if instruction == PRN:
+                reg_num = self.ram[self.pc + 1]
+                print(self.reg[reg_num])
+                self.pc += 2
+
+            elif instruction == LDI:
+                reg_num = self.ram[self.pc + 1]
+                value = self.ram[self.pc + 2]
+
+                self.reg[reg_num] = value
+
+                self.pc += 3
+
+            elif instruction == MUL:
+                reg_a = self.ram[self.pc + 1]
+                reg_b = self.ram[self.pc + 2]
+
+                self.alu("MUL", reg_a, reg_b)
+
+                self.pc += 3
+
+            elif instruction == ADD:
+                reg_a = self.ram[self.pc + 1]
+                reg_b = self.ram[self.pc + 2]
+
+                self.alu("ADD", reg_a, reg_b)
+
+                self.pc += 3
+
+            elif instruction == PUSH:
+                reg_num = self.ram[self.pc + 1]
+                self.push(self.reg[reg_num])
+                self.pc += 2
+
+            elif instruction == POP:
+                reg_num = self.ram[self.pc + 1]
+                self.pop()
+                self.pc += 2
+
+            elif instruction == CALL:
+                reg_num = self.ram[self.pc + 1]
+                self.push(self.pc + 2)
+                self.pc = self.reg[reg_num]
+
+            elif instruction == RET:
+                self.pc = self.pop()
+
+            elif instruction == HLT:
+
+                halted = True
+
+    def ram_read(self, address):
+        return self.ram[address]
+
+    def ram_write(self, value, address):
+        self.ram[address] = value
+
+    def push(self, value):
+        self.sp -= 1
+        self.ram[self.sp] = value
+
+    def pop(self):
+        if self.sp < len(self.ram) - 1:
+            value = self.ram[self.sp]
+            self.sp += 1
+            return value
