@@ -12,7 +12,9 @@ program = f"examples/{program}.ls8"
 file = open(program, "r")
 program = []
 for instruction in file:
+    print(instruction)
     byte = instruction.split()[0]
+    print(byte)
     if byte != '#':
         byte = int(byte, base=2)
         program.append(byte)
